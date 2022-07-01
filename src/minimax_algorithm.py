@@ -35,46 +35,6 @@ class MinimaxAlgorithm:
                 str(entry.move) for entry in reader.find_all(board)
             ]
     
-    def minimaxMove(self):
-        globalScore = -1e8 if self.isWhitePlayer else 1e8
-        selectedMove = None
-
-        #Can move from opening book
-        if self.openingMoves:
-            selectedMove = chess.Move.from_uci(
-                self.openingMoves[randint(0, len(self.openingMoves) // 2)])
-        
-        else:
-            for move in self.board.legal_moves:
-                self.board.push(move)
-
-                localScore = self.minimaxAlgorithm(self.depth - 1, not self.isWhitePlayer,
-                                           -1e8, 1e8)
-
-                self.boardCaches[self.hashBoard(
-                    self.depth - 1, not self.isWhitePlayer)] = localScore
-
-                if self.isWhitePlayer and localScore > globalScore:
-                    globalScore = localScore
-                    selectedMove = move
-                elif not self.isWhitePlayer and localScore < globalScore:
-                    globalScore = localScore
-                    selectedMove = move
-
-                self.board.pop()
-                print(localScore, move)
-
-            print('\ncacheHit: ' + str(self.cacheHit))
-            print('cacheMiss: ' + str(self.cacheMiss) + '\n')
-
-        print("The selected move after running minimax algorithm:")
-        print(str(globalScore) + ' ' + str(selectedMove) + '\n')
-
-        self.board.push(selectedMove)
-
-        with open('data/cache.p', 'wb') as cache:
-            pickle.dump(self.boardCaches, cache)
-
 
     #The max node has an alpha value (greater than or equal to alpha – always increasing).
     #The min node has a beta value (less than or equal to beta – always decreasing). 
